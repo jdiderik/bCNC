@@ -1,17 +1,38 @@
 NAME = bCNC
-SOURCES = *.py lib/*.py plugins/*.py
+SOURCES =	bCNC/*.py \
+		bCNC/controllers/*.py \
+		bCNC/lib/*.py \
+		bCNC/lib/python_utils/*.py \
+		bCNC/lib/stl/*.py \
+		bCNC/lib/svg/*.py \
+		bCNC/lib/svg/path/*.py \
+		bCNC/plugins/*.py
+.PHONY = help
 
-pot: ${NAME}.pot
+help:
+	@echo see source
 
-${NAME}.pot: ${SOURCES}
+pot: bCNC/${NAME}.pot
+
+bCNC/${NAME}.pot: ${SOURCES}
 	xgettext --from-code=UTF-8 --keyword=N_ -d ${NAME} -o $@ $^
-	#pygettext.py -k N_ -d ${NAME} -o $@ $^
 
 tags:
-	ctags *.py lib/*.py plugins/*.py
+	ctags bCNC/*.py bCNC/lib/*.py bCNC/plugins/*.py
 
 clean:
-	rm -f ${NAME}.pot
-	rm -f *.pyc *.pyo
-	rm -f lib/*.pyc lib/*.pyo
-	rm -f plugins/*.pyc plugins/*.pyo
+	git clean -Xf
+	rm -f bCNC/*.pyc bCNC/*.pyo
+	rm -f bCNC/controllers/*.pyc bCNC/controllers/*.pyo
+	rm -f bCNC/lib/*.pyc bCNC/lib/*.pyo
+	rm -f bCNC/lib/python_utils/*.pyc bCNC/lib/python_utils/*.pyo
+	rm -f bCNC/lib/stl/*.pyc bCNC/lib/stl/*.pyo
+	rm -f bCNC/lib/svg/*.pyc bCNC/lib/svg/*.pyo
+	rm -f bCNC/lib/svg/path/*.pyc bCNC/lib/svg/path/*.pyo
+	rm -f bCNC/plugins/*.pyc bCNC/plugins/*.pyo
+
+upload:
+	rm -f dist/*
+	#python2 setup.py sdist upload
+	python2 setup.py sdist
+	twine upload -u $(USER) dist/*
